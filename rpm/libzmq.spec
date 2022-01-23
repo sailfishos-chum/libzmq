@@ -3,7 +3,7 @@
 Name:          libzmq
 Summary:       ZeroMQ, a lightweight messaging library
 Version:       4.3.4
-Release:       1%{?dist}
+Release:       2%{?dist}
 License:       LGPLv3+
 URL:           https://github.com/zeromq/libzmq
 Source:        %{name}-%{version}.tar.bz2
@@ -25,7 +25,7 @@ BuildRequires:  asciidoc xmlto
 %define _buildhost SailfishSDK
 
 %description
-Unpublished meta entry
+Unpublished meta entry so that this filename doesn't have to change when the SONAME changes
 
 %define desc The 0MQ lightweight messaging kernel is a library which extends the \
 standard socket interfaces with features traditionally provided by\

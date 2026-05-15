@@ -101,6 +101,8 @@ autoreconf -fi
 %install
 %make_install
 
+rm -f %{buildroot}%{_libdir}/libzmq.a
+
 %post -n %{lib_name} -p /sbin/ldconfig
 
 %postun -n %{lib_name} -p /sbin/ldconfig

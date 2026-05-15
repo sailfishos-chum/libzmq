@@ -7,6 +7,9 @@ Release:       1%{?dist}
 License:       LGPLv3+
 URL:           https://github.com/zeromq/libzmq
 Source:        %{name}-%{version}.tar.bz2
+
+Patch0:        fix-gcc-12-build.patch
+
 BuildRequires: gcc gcc-c++ libstdc++-devel
 BuildRequires:  make autoconf automake libtool glib2-devel
 BuildRequires:  libsodium-devel nss-devel gnutls-devel
@@ -72,7 +75,7 @@ This package contains tools such as curve_keygen to use with libzmq.
 # don't use bundled components
 rm -rf external/wepoll
 rm -rf external/sha1
-%autosetup -n %{name}-%{version}/%{name}
+%autosetup -p1 -n %{name}-%{version}/%{name}
 
 %build
 export CFLAGS="$CFLAGS $RPM_OPT_FLAGS"
@@ -100,6 +103,8 @@ autoreconf -fi
 
 %install
 %make_install
+
+rm -f %{buildroot}%{_libdir}/libzmq.a
 
 %post -n %{lib_name} -p /sbin/ldconfig
 

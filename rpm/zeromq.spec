@@ -1,5 +1,8 @@
 %define lib_abi_version 5
 %define lib_name libzmq%{lib_abi_version}
+%bcond_with docs
+%bcond_with tools
+
 Name:          libzmq
 Summary:       ZeroMQ, a lightweight messaging library
 Version:       4.3.5
@@ -8,8 +11,6 @@ License:       LGPLv3+
 URL:           https://github.com/zeromq/libzmq
 Source:        %{name}-%{version}.tar.bz2
 
-Patch0:        fix-gcc-12-build.patch
-
 BuildRequires: gcc gcc-c++ libstdc++-devel
 BuildRequires:  make autoconf automake libtool glib2-devel
 BuildRequires:  libsodium-devel nss-devel gnutls-devel
@@ -17,7 +18,6 @@ BuildRequires:  libsodium-devel nss-devel gnutls-devel
 #BuildRequires:  openpgm-devel
 #BuildRequires:  krb5-devel
 
-%bcond_with docs
 %if %{with docs}
 BuildRequires:  asciidoc xmlto
 %endif
@@ -59,7 +59,6 @@ Requires:  libsodium-devel nss-devel gnutls-devel
 
 This package contains ZeroMQ related development libraries and header files.
 
-%bcond_with tools
 %if %{with tools}
 %package tools
 Summary:   ZeroMQ tools
@@ -78,22 +77,27 @@ rm -rf external/sha1
 %autosetup -p1 -n %{name}-%{version}/%{name}
 
 %build
-export CFLAGS="$CFLAGS $RPM_OPT_FLAGS"
-export CXXFLAGS="$CXXFLAGS $RPM_OPT_FLAGS"
-
 autoreconf -fi
-%configure --disable-drafts \
+%configure \
+    CFLAGS="$CFLAGS" \
+    CXXFLAGS="$CXXFLAGS" \
+    --disable-drafts \
     --with-libsodium \
     --with-nss \
     --with-tls \
     --with-pic \
+%if %{without tools}
     --disable-curve-keygen \
+%endif
+%if %{without docs}
+    --without-docs \
+    --without-documentation \
+%endif
 #    --enable-debug \
 #    --enable-libbsd \
 #    --with-libgssapi_krb5 \
 #    --with-pgm \
-    CFLAGS="$CFLAGS" \
-    CXXFLAGS="$CXXFLAGS"
+    %nil
 
 %make_build
 
@@ -111,16 +115,14 @@ rm -f %{buildroot}%{_libdir}/libzmq.a
 %postun -n %{lib_name} -p /sbin/ldconfig
 
 %files -n %{lib_name}
-%defattr(-,root,root,-)
 %{_libdir}/libzmq.so.*
 
-%doc AUTHORS COPYING COPYING.LESSER NEWS
+%doc AUTHORS LICENSE NEWS README.md SECURITY.md
 %if %{with docs}
 %{_mandir}/man7/zmq.7.gz
 %endif
 
 %files devel
-%defattr(-,root,root,-)
 %{_includedir}/zmq.h
 %{_includedir}/zmq_utils.h
 
@@ -135,10 +137,11 @@ rm -f %{buildroot}%{_libdir}/libzmq.a
 
 %if %{with tools}
 %files tools
-%defattr(-,root,root,-)
 %{_bindir}/curve_keygen
 %endif
 
 %changelog
+* Fri Oct 09 2026 nephros <sailfish@nephros.org> - 4.3.5-1
+- Version Bump
 * Sat Jan 22 2022 takimata <takimata@gmx.de> - 4.3.4-1
 - Initial packaging for Chum

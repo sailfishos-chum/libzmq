@@ -2,7 +2,7 @@
 %define lib_name libzmq%{lib_abi_version}
 Name:          libzmq
 Summary:       ZeroMQ, a lightweight messaging library
-Version:       4.3.4
+Version:       4.3.5
 Release:       1%{?dist}
 License:       LGPLv3+
 URL:           https://github.com/zeromq/libzmq

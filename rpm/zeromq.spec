@@ -11,6 +11,9 @@ License:       LGPLv3+
 URL:           https://github.com/zeromq/libzmq
 Source:        %{name}-%{version}.tar.bz2
 
+# On OBS, SFOS 4.6 and 5.0 throw an error over this, the others do not.
+Patch1:        Ignore-gcc-Wstringop-overflow.patch
+
 BuildRequires: gcc gcc-c++ libstdc++-devel
 BuildRequires:  make autoconf automake libtool glib2-devel
 BuildRequires:  libsodium-devel nss-devel gnutls-devel
